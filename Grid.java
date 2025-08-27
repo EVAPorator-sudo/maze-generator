@@ -1,6 +1,5 @@
 public class Grid{
     Grid(int x_len, int y_len){
-        @SuppressWarnings("unused")
         Cell[][] map = new Cell[x_len][y_len];
     }
 

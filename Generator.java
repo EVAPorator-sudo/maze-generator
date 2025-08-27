@@ -1,8 +1,4 @@
-import java.util.Random;
-
 public class Generator {
-
-    static Random random = new Random();
 
     public static Grid Ellers(int x_len,int y_len) {
 
@@ -12,30 +8,16 @@ public class Generator {
 
         for (int y = 1; y < y_len; y++) {
             
-            for(Cell cell: current_row.cells){
+            current_row.random_merge();
 
-                if (random.nextBoolean()) {
-                    
-                    current_row.merge(cell);
-                }
-            }
-
-            for(Set set: current_row.set_array){
-
-                current_row.carve_points(set);
-            
-            }
+            current_row.carve_points();
             
             ellers_grid.write_row(current_row);
             current_row.carve();
 
         }
 
-        for (Cell cell : current_row.cells) {
-
-            current_row.merge(cell);
-            
-        }
+        current_row.merge_all();
 
         ellers_grid.write_row(current_row);
         return ellers_grid;
