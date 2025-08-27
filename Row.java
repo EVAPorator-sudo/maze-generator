@@ -2,16 +2,19 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Row {
-    ArrayList<Cell> cells = new ArrayList<>();
+    ArrayList<Cell> cells;
+    ArrayList<Cell[]> set_array;
+    ArrayList<Integer> carve_points;
     int count;
-    ArrayList<Cell[]> set_array = new ArrayList<>();
-    ArrayList<Integer> carve_points = new ArrayList<>();
 
     public Row(int x_len) {
+        count = 1;
+        cells = new ArrayList<>();
+        set_array = new ArrayList<>();
+        carve_points = new ArrayList<>();
         for (int i = 0; i < x_len; i++){
             cells.add(new Cell());
         }
-        count = 1;
     }
 
     public void initialize(){
@@ -50,36 +53,44 @@ public class Row {
         }
     }
 
-    void make_sets(){
-        int current_value = 0;
+    void make_sets() {
+        set_array.clear();
+        int current_value = -1;
         ArrayList<Cell> working_array = new ArrayList<>();
-        for (Cell cell: cells){
+
+        for (Cell cell : cells) {
             if (cell.path_num == current_value) {
                 working_array.add(cell);
-            }
+                } 
             else {
-                set_array.add(working_array.toArray(new Cell[0]));
-                working_array = new ArrayList<Cell>();
+                if (!working_array.isEmpty()) {
+                    set_array.add(working_array.toArray(new Cell[0]));
+                }
+                working_array = new ArrayList<>();
+                working_array.add(cell);
+                current_value = cell.path_num;
             }
         }
-    }
+        if (!working_array.isEmpty()) {
+            set_array.add(working_array.toArray(new Cell[0]));
+        }
+        }
 
     public void carve_points(){
         Random random = new Random();
-        for (Cell[] set: set_array){
-            boolean carved = false;
-            while (carved == false) {
-                for (Cell cell: set){
-                    if (random.nextBoolean()){
-                        carved = true;
-                        carve_points.add(cells.indexOf(cell));
-                    }
-                }
-            }
+        carve_points.clear();
+        for (Cell[] set : set_array) {
+            int randomIndex = random.nextInt(set.length);
+            carve_points.add(cells.indexOf(set[randomIndex]));
         }
     }
     
-    public void carve(){
-        throw new java.lang.RuntimeException("not implemented yet");
+    public Row carve(int x_len){
+        Row new_row = new Row(x_len);
+        for (int carve_point: carve_points){
+            new_row.cells.get(carve_point).path_num = cells.get(carve_point).path_num;
+        }
+        new_row.initialize();
+        return new_row;
     }
 }
